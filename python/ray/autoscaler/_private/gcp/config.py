@@ -610,10 +610,13 @@ def _configure_subnet(config, compute):
     if not subnets:
         raise NotImplementedError("Should be able to create subnet.")
 
-    # TODO: make sure that we have usable subnet. Maybe call
-    # compute.subnetworks().listUsable? For some reason it didn't
-    # work out-of-the-box
-    default_subnet = subnets[0]
+    # Find the 'default' subnet
+    default_subnet = None
+    for subnet in subnets:
+        if subnet.get("name") == "default":
+            default_subnet = subnet
+    if not default_subnet:
+        default_subnet = subnets[0]
 
     default_interfaces = [
         {
